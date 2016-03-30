@@ -1,8 +1,8 @@
 'use strict';
-const SparkPost = require('sparkpost');
+const Spark_Post = require('sparkpost');
 // TODO: Move to env variable.
 const spark_token = process.env.SPARK_TOKEN || 'YOUR TOKEN';
-const sparkClient = new SparkPost(sparkToken);
+const spark_client = new Spark_Post(spark_token);
 const pg = require('../../database/pg_connect.js');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
@@ -11,9 +11,9 @@ const validator = require('validator');
 function validateEmailAvailable(email, next) {
     pg.connect(function (err, client, done) {
         if (err) return next(err);
-        client.query('SELECT checkEmail($1)', [email], function(queryErr, result) {
+        client.query('SELECT check_email($1)', [email], function(queryErr, result) {
             if (queryErr) return next(queryErr);
-            if (result.rows[0].checkemail === true) {
+            if (result.rows[0].check_email === true) {
                 return next(null, true);
             }
             return next(null, false);
@@ -24,9 +24,9 @@ function validateEmailAvailable(email, next) {
 function validateUsernameAvailable(username, next) {
     pg.connect(function (err, client, done) {
         if (err) return next(err);
-        client.query('SELECT checkUsername($1)', [username], function(queryErr, result) {
+        client.query('SELECT check_username($1)', [username], function(queryErr, result) {
             if (queryErr) return next(queryErr);
-            if (result.rows[0].checkusername === true) {
+            if (result.rows[0].check_username === true) {
                 return next(null, true);
             }
             return next(null, false);
@@ -35,17 +35,13 @@ function validateUsernameAvailable(username, next) {
 }
 
 function createUser(user, next) {
-    console.log('ARE YOU REAL');
     pg.connect(function (err, client, done) {
         if (err) return next(err);
         client.query('SELECT * FROM createuser_v3($1::varchar, $2::varchar)', user, function (pgerr, result) {
             done();
-            console.log('HELL?');
-            // todo: handle varchar length error
             if (pgerr) {
                 return next(err);
             }
-            console.log(result.rows[0]);
             let userID = result.rows[0].userid;
             return next(null, userID);
         });
@@ -55,7 +51,7 @@ function createUser(user, next) {
 function createLogin(username, password, userID, email, next) {
     pg.connect(function (err, client, done) {
         if (err) return next(err);
-        client.query('INSERT INTO logins(userName, password, userID, email) VALUES ($1, $2, $3, $4) returning loginID', [username, password, userID, email], function (clientErr, result) {
+        client.query('INSERT INTO logins(username, password, userID, email) VALUES ($1, $2, $3, $4) returning loginid', [username, password, userID, email], function (clientErr, result) {
             done();
             if (clientErr) return next(err);
             return next(null, true);
@@ -95,9 +91,6 @@ module.exports = function(req, res, next) {
                     if (loginCreationErr) {
                         return next(loginCreationErr);
                     }
-                    const token = jwt.sign({ userID: userID }, 'temptoken');
-
-                    // End Elastic
                     var reqObj = {
                         transmissionBody: {
                             campaignId: 'registration-confirmation',
@@ -112,7 +105,7 @@ module.exports = function(req, res, next) {
                         }
                     };
 
-                    sparkClient.transmissions.send(reqObj, function(sparkErr, res) {
+                    spark_client.transmissions.send(reqObj, function(sparkErr, res) {
                         if (sparkErr) {
                             console.log('Whoops! Something went wrong');
                             console.log(err);

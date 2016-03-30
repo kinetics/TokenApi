@@ -9,7 +9,7 @@ module.exports = function (req, res, next) {
     if (token) {
         jwt.verify(token, verify, function(err, decoded) {
             if (err) {
-                return res.status(401).send('Unauthrized');
+                return res.status(401).send('Unauthorized');
             }
             req.decoded = decoded;
             const userID = req.decoded.userID;

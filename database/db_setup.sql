@@ -55,7 +55,7 @@ BEGIN
 END;
 $BODY$  LANGUAGE plpgsql;
 
-CREATE FUNCTION checkEmail(email varchar)
+CREATE FUNCTION check_email(email varchar)
 RETURNS BOOLEAN AS
 $BODY$DECLARE exists BOOLEAN;
 BEGIN

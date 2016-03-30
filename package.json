@@ -20,5 +20,10 @@
     "pg": "^4.5.1",
     "sparkpost": "^1.2.0",
     "validator": "^5.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^2.5.3",
+    "eslint-config-airbnb": "^6.2.0",
+    "eslint-plugin-react": "^4.2.3"
   }
 }
