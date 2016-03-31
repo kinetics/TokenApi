@@ -1,7 +1,8 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const body_parser = require('body-parser');
 const chalk = require('chalk');
 const cors = require('cors');
+const http = require('http');
 const port = process.env.PORT || 3000;
 
 // Modules
@@ -12,30 +13,28 @@ const register = require('./api/register/register.routes');
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(body_parser.json());
 app.set('showStackError', true);
-
-// Security setting
 app.disable('x-powered-by');
 
-// Wire up express route files
 app.use('/api', auth);
 app.use('/api', register);
 
-// Heartbeat url.
-app.get('/heart', function (req, res) {
-    res.status(200).send('Node api is online!');
+app.get('/heart', function(req, res) {
+    res.status(200).send({'message':'Node api is online!'});
 });
 
-// Todo: configure errhandler route
+// TODO: Implement error logging.
 app.use(function(err, req, res, next) {
-    if (!err) return next();
-    res.status(500).send({error : err.stack});
+    console.log('status: ' + err.status);
+    if(err.status !==  404) {
+        res.status(500).send();
+    } else {
+        res.status(404);
+        res.send(err.message || 'URL or Page not found.');
+    }
 });
 
-app.use(function(req, res) {
-    res.status(404).send({ url : req.originalUrl, error : 'Not Found.' });
-});
 
 const server = app.listen(port, function() {
     const host = server.address().address;
@@ -44,3 +43,4 @@ const server = app.listen(port, function() {
 });
 
 console.log('--');
+exports.app = app;

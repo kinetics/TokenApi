@@ -18,17 +18,22 @@ module.exports = function(req, res, next) {
 
     // Verifies that the credentials exist and are a match. Returns TRUE if so, otherwise null / false.
     pg.connect(function (err, client, done) {
-        if (err) return next(err);
-        client.query('SELECT * from userLogin($1, $2)', [username, password], function (pgerr, result) {
+        if (err) {
+            return next(err);
+        }
+        if (!username || !password) {
+            res.status(401).send('Missing credentials');
+        }
+        client.query('SELECT * from user_login($1, $2)', [username, password], function (pgerr, result) {
             done();
             if (pgerr) {
                 return next(err);
             }
             const user = result.rows[0];
-            if (user.userlogin === false) {
-                return next(null, 401);
-            } else if (user.userlogin === null) {
-                return next(null, 401);
+            if (user.user_login === false) {
+                return res.status(401).send('Failed to auth.');
+            } else if (user.user_login === null) {
+                return res.status(401).send('Failed to auth.');
             }
             var token = jwt.sign(user, 'tempsecret', {
                 // Change this to however you want.

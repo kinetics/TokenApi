@@ -3,7 +3,7 @@ const pg = require('pg');
 const user = 'postgres';
 const host = 'localhost';
 const port = 5432;
-const password = process.env.PG_PASS || 'YOUR_PASS';
+const password = process.env.PG_PASS || 'cmv221mm';
 const connectionString = 'postgres://' + user + ':' + password + '@' + host + ':' + port + '/' + 'oauth';
 
 /**

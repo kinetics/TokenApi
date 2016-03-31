@@ -22,8 +22,11 @@
     "validator": "^5.1.0"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1",
     "eslint": "^2.5.3",
     "eslint-config-airbnb": "^6.2.0",
-    "eslint-plugin-react": "^4.2.3"
+    "eslint-plugin-react": "^4.2.3",
+    "mocha": "^2.4.5"
   }
 }
