@@ -19,6 +19,7 @@ module.exports = function(req, res, next) {
     // Verifies that the credentials exist and are a match. Returns TRUE if so, otherwise null / false.
     pg.connect(function (err, client, done) {
         if (err) {
+            console.log('error');
             return next(err);
         }
         if (!username || !password) {
@@ -27,7 +28,8 @@ module.exports = function(req, res, next) {
         client.query('SELECT * from user_login($1, $2)', [username, password], function (pgerr, result) {
             done();
             if (pgerr) {
-                return next(err);
+                console.log(pgerr);
+                return next(pgerr);
             }
             const user = result.rows[0];
             if (user.user_login === false) {

@@ -26,15 +26,13 @@ app.get('/heart', function(req, res) {
 
 // TODO: Implement error logging.
 app.use(function(err, req, res, next) {
-    console.log('status: ' + err.status);
     if(err.status !==  404) {
-        res.status(500).send();
+        res.status(500).send('Something went wrong.');
     } else {
         res.status(404);
         res.send(err.message || 'URL or Page not found.');
     }
 });
-
 
 const server = app.listen(port, function() {
     const host = server.address().address;
