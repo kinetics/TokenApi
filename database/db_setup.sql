@@ -28,7 +28,8 @@ CREATE OR REPLACE FUNCTION createuser_v3(
 	END;
 $BODY$ LANGUAGE plpgsql;
 
-
+select * from logins;
+select * from users;
 CREATE TABLE Logins (
 	loginID SERIAL NOT NULL PRIMARY KEY,
 	user_id INT REFERENCES USERS(user_id),

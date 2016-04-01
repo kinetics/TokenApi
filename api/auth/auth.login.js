@@ -25,10 +25,9 @@ module.exports = function(req, res, next) {
         if (!username || !password) {
             res.status(401).send('Missing credentials');
         }
-        client.query('SELECT * from user_login($1, $2)', [username, password], function (pgerr, result) {
+        client.query('SELECT user_login($1, $2)', [username, password], function (pgerr, result) {
             done();
             if (pgerr) {
-                console.log(pgerr);
                 return next(pgerr);
             }
             const user = result.rows[0];
